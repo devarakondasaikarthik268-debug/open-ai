@@ -1,0 +1,6 @@
+{
+  "name": "Aditya AI – Smart University Assistant",
+  "description": "AI-powered university assistant and academic portal for Aditya University, Surampalem, Andhra Pradesh, India.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,110 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-display: 'Outfit', 'Noto Sans Telugu', sans-serif;
+    --font-sans: 'Plus Jakarta Sans', 'Noto Sans Telugu', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle custom scrollbars for chat and sidebar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.55);
+}
+
+/* Markdown prose inside chat responses */
+.aditya-prose {
+  line-height: 1.68;
+  font-size: 0.9375rem;
+}
+
+.aditya-prose p + p {
+  margin-top: 0.75rem;
+}
+
+.aditya-prose ul, .aditya-prose ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-left: 1.35rem;
+}
+
+.aditya-prose ul {
+  list-style-type: disc;
+}
+
+.aditya-prose ol {
+  list-style-type: decimal;
+}
+
+.aditya-prose li + li {
+  margin-top: 0.25rem;
+}
+
+.aditya-prose h1, .aditya-prose h2, .aditya-prose h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin-top: 1.1rem;
+  margin-bottom: 0.45rem;
+}
+
+.aditya-prose h1 { font-size: 1.25rem; }
+.aditya-prose h2 { font-size: 1.1rem; }
+.aditya-prose h3 { font-size: 1rem; }
+
+.aditya-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.85rem 0;
+  font-size: 0.85rem;
+}
+
+.aditya-prose th, .aditya-prose td {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+}
+
+.aditya-prose th {
+  background: rgba(30, 58, 138, 0.08);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

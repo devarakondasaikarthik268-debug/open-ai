@@ -1,0 +1,428 @@
+{
+  "entities": {
+    "PublicProfile": {
+      "title": "PublicProfile",
+      "description": "Non-PII public profile of a registered Aditya University user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "displayName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "role": { "type": "string", "enum": ["student", "faculty", "admin"] },
+        "department": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "year": { "type": "string", "minLength": 0, "maxLength": 16 },
+        "section": { "type": "string", "minLength": 0, "maxLength": 16 },
+        "designation": { "type": "string", "minLength": 0, "maxLength": 80 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "role", "department", "createdAt", "updatedAt"]
+    },
+    "PrivateUserInfo": {
+      "title": "PrivateUserInfo",
+      "description": "Isolated PII record for a user (email, roll number, faculty ID).",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 160 },
+        "rollNumber": { "type": "string", "minLength": 0, "maxLength": 32 },
+        "facultyId": { "type": "string", "minLength": 0, "maxLength": 32 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "createdAt", "updatedAt"]
+    },
+    "AdminMember": {
+      "title": "AdminMember",
+      "description": "Trusted administrator membership document.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 160 },
+        "grantedBy": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "grantedBy", "createdAt"]
+    },
+    "FacultyMember": {
+      "title": "FacultyMember",
+      "description": "Trusted faculty membership document approved by Admin.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "displayName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "department": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "designation": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "approvedBy": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "department", "designation", "approvedBy", "createdAt"]
+    },
+    "FacultyInvite": {
+      "title": "FacultyInvite",
+      "description": "Admin-created faculty invitation keyed by sanitized email or ID.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "maxLength": 160 },
+        "department": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "designation": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "invitedBy": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "department", "designation", "invitedBy", "createdAt"]
+    },
+    "FacultyRequest": {
+      "title": "FacultyRequest",
+      "description": "Pending request from a signed-in user to obtain Faculty access.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "displayName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "email": { "type": "string", "format": "email", "maxLength": 160 },
+        "facultyId": { "type": "string", "minLength": 2, "maxLength": 32 },
+        "department": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "designation": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "email", "facultyId", "department", "designation", "status", "createdAt", "updatedAt"]
+    },
+    "ChatSession": {
+      "title": "ChatSession",
+      "description": "A user's AI conversation session.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "language": { "type": "string", "enum": ["en", "te"] },
+        "aiMode": {
+          "type": "string",
+          "enum": [
+            "general",
+            "study_assistant",
+            "code_generator",
+            "doubt_solver",
+            "assignment_helper",
+            "exam_prep",
+            "notes_generator",
+            "quiz_generator",
+            "resume_builder",
+            "career_guidance"
+          ]
+        },
+        "isSaved": { "type": "boolean" },
+        "lastMessagePreview": { "type": "string", "maxLength": 240 },
+        "messageCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "language", "aiMode", "isSaved", "lastMessagePreview", "messageCount", "createdAt", "updatedAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Individual message inside a ChatSession.",
+      "type": "object",
+      "properties": {
+        "chatId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "role": { "type": "string", "enum": ["user", "assistant"] },
+        "content": { "type": "string", "minLength": 1, "maxLength": 32000 },
+        "attachmentName": { "type": "string", "maxLength": 160 },
+        "attachmentType": { "type": "string", "maxLength": 80 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["chatId", "userId", "role", "content", "createdAt"]
+    },
+    "Department": {
+      "title": "Department",
+      "description": "Academic department at Aditya University.",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "minLength": 2, "maxLength": 16 },
+        "name": { "type": "string", "minLength": 3, "maxLength": 120 },
+        "hodName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 600 },
+        "isDemoData": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["code", "name", "hodName", "description", "isDemoData", "createdAt", "updatedAt"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Academic course or skill track.",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "minLength": 2, "maxLength": 24 },
+        "title": { "type": "string", "minLength": 3, "maxLength": 140 },
+        "department": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "semester": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "credits": { "type": "number" },
+        "instructorName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "category": { "type": "string", "enum": ["Core", "Skill Track", "Lab", "Elective"] },
+        "isDemoData": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["code", "title", "department", "semester", "credits", "instructorName", "description", "category", "isDemoData", "createdAt", "updatedAt"]
+    },
+    "StudyMaterial": {
+      "title": "StudyMaterial",
+      "description": "Faculty-uploaded study notes, PDFs, or reference materials.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 3, "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "courseCode": { "type": "string", "minLength": 2, "maxLength": 24 },
+        "department": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "semester": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "fileName": { "type": "string", "minLength": 1, "maxLength": 180 },
+        "fileUrl": { "type": "string", "maxLength": 1000 },
+        "fileType": { "type": "string", "maxLength": 64 },
+        "contentSummary": { "type": "string", "maxLength": 12000 },
+        "uploadedByUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "uploadedByName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "isDemoData": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "description", "courseCode", "department", "semester", "fileName", "fileUrl", "fileType", "contentSummary", "uploadedByUid", "uploadedByName", "isDemoData", "createdAt", "updatedAt"]
+    },
+    "Assignment": {
+      "title": "Assignment",
+      "description": "Course assignment created by Faculty or Admin.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 3, "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 3000 },
+        "courseCode": { "type": "string", "minLength": 2, "maxLength": 24 },
+        "department": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "year": { "type": "string", "minLength": 1, "maxLength": 16 },
+        "section": { "type": "string", "minLength": 1, "maxLength": 16 },
+        "dueDate": { "type": "string", "minLength": 4, "maxLength": 40 },
+        "maxMarks": { "type": "integer" },
+        "createdByUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdByName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "isDemoData": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "description", "courseCode", "department", "year", "section", "dueDate", "maxMarks", "createdByUid", "createdByName", "isDemoData", "createdAt", "updatedAt"]
+    },
+    "Submission": {
+      "title": "Submission",
+      "description": "Student submission for a specific assignment.",
+      "type": "object",
+      "properties": {
+        "assignmentId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "studentId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "studentName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "studentRollNumber": { "type": "string", "minLength": 2, "maxLength": 32 },
+        "submissionText": { "type": "string", "minLength": 1, "maxLength": 10000 },
+        "fileName": { "type": "string", "maxLength": 180 },
+        "fileUrl": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["submitted", "graded"] },
+        "marks": { "type": "integer" },
+        "feedback": { "type": "string", "maxLength": 1000 },
+        "gradedByUid": { "type": "string", "maxLength": 128 },
+        "submittedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["assignmentId", "studentId", "studentName", "studentRollNumber", "submissionText", "status", "submittedAt", "updatedAt"]
+    },
+    "Exam": {
+      "title": "Exam",
+      "description": "Examination schedule entry.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 3, "maxLength": 140 },
+        "courseCode": { "type": "string", "minLength": 2, "maxLength": 24 },
+        "courseName": { "type": "string", "minLength": 3, "maxLength": 140 },
+        "department": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "year": { "type": "string", "minLength": 1, "maxLength": 16 },
+        "examDate": { "type": "string", "minLength": 4, "maxLength": 40 },
+        "startTime": { "type": "string", "minLength": 2, "maxLength": 32 },
+        "endTime": { "type": "string", "minLength": 2, "maxLength": 32 },
+        "venue": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "examType": { "type": "string", "enum": ["Mid-1", "Mid-2", "Semester", "Lab"] },
+        "isDemoData": { "type": "boolean" },
+        "createdByUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "courseCode", "courseName", "department", "year", "examDate", "startTime", "endTime", "venue", "examType", "isDemoData", "createdByUid", "createdAt", "updatedAt"]
+    },
+    "AttendanceRecord": {
+      "title": "AttendanceRecord",
+      "description": "Subject-wise attendance record for a student.",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "studentRollNumber": { "type": "string", "minLength": 2, "maxLength": 32 },
+        "courseCode": { "type": "string", "minLength": 2, "maxLength": 24 },
+        "courseName": { "type": "string", "minLength": 3, "maxLength": 140 },
+        "attendedClasses": { "type": "integer" },
+        "totalClasses": { "type": "integer" },
+        "semester": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "isDemoData": { "type": "boolean" },
+        "updatedByUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["studentId", "studentRollNumber", "courseCode", "courseName", "attendedClasses", "totalClasses", "semester", "isDemoData", "updatedByUid", "createdAt", "updatedAt"]
+    },
+    "AcademicResult": {
+      "title": "AcademicResult",
+      "description": "Semester grade entry for a student.",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "studentRollNumber": { "type": "string", "minLength": 2, "maxLength": 32 },
+        "semester": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "courseCode": { "type": "string", "minLength": 2, "maxLength": 24 },
+        "courseName": { "type": "string", "minLength": 3, "maxLength": 140 },
+        "credits": { "type": "number" },
+        "grade": { "type": "string", "minLength": 1, "maxLength": 8 },
+        "gradePoints": { "type": "number" },
+        "isDemoData": { "type": "boolean" },
+        "publishedByUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["studentId", "studentRollNumber", "semester", "courseCode", "courseName", "credits", "grade", "gradePoints", "isDemoData", "publishedByUid", "createdAt", "updatedAt"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "University or faculty announcement.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 3, "maxLength": 180 },
+        "content": { "type": "string", "minLength": 3, "maxLength": 4000 },
+        "category": { "type": "string", "enum": ["Academic", "Exam", "Campus", "Placement", "General"] },
+        "targetRole": { "type": "string", "enum": ["all", "student", "faculty"] },
+        "department": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "authorUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "authorRole": { "type": "string", "enum": ["faculty", "admin"] },
+        "isPinned": { "type": "boolean" },
+        "isDemoData": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "content", "category", "targetRole", "department", "authorUid", "authorName", "authorRole", "isPinned", "isDemoData", "createdAt", "updatedAt"]
+    },
+    "CampusEvent": {
+      "title": "CampusEvent",
+      "description": "Academic calendar item or university event.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 3, "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 1500 },
+        "eventDate": { "type": "string", "minLength": 4, "maxLength": 40 },
+        "venue": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "category": { "type": "string", "enum": ["Academic", "Technical", "Cultural", "Holiday", "Exam"] },
+        "isDemoData": { "type": "boolean" },
+        "createdByUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "description", "eventDate", "venue", "category", "isDemoData", "createdByUid", "createdAt", "updatedAt"]
+    },
+    "FeedbackRating": {
+      "title": "FeedbackRating",
+      "description": "Five-star rating and feedback for courses, study materials, faculty, or platform.",
+      "type": "object",
+      "properties": {
+        "targetType": { "type": "string", "enum": ["course", "material", "faculty", "platform"] },
+        "targetId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "targetTitle": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "userRole": { "type": "string", "enum": ["student", "faculty", "admin"] },
+        "rating": { "type": "integer" },
+        "comment": { "type": "string", "minLength": 2, "maxLength": 1200 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["targetType", "targetId", "targetTitle", "userId", "userName", "userRole", "rating", "comment", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/profiles_public/{userId}": {
+      "schema": { "$ref": "#/entities/PublicProfile" },
+      "description": "Publicly visible non-PII user directory profile."
+    },
+    "/users_private/{userId}": {
+      "schema": { "$ref": "#/entities/PrivateUserInfo" },
+      "description": "Strictly isolated PII document for a user."
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminMember" },
+      "description": "Authoritative admin membership documents."
+    },
+    "/faculty_members/{userId}": {
+      "schema": { "$ref": "#/entities/FacultyMember" },
+      "description": "Authoritative verified faculty membership documents."
+    },
+    "/faculty_invites/{inviteId}": {
+      "schema": { "$ref": "#/entities/FacultyInvite" },
+      "description": "Admin-issued faculty invitations."
+    },
+    "/faculty_requests/{userId}": {
+      "schema": { "$ref": "#/entities/FacultyRequest" },
+      "description": "Faculty access requests pending admin approval."
+    },
+    "/chats/{chatId}": {
+      "schema": { "$ref": "#/entities/ChatSession" },
+      "description": "AI chat sessions owned by individual users."
+    },
+    "/chats/{chatId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Messages inside an AI chat session."
+    },
+    "/departments/{departmentId}": {
+      "schema": { "$ref": "#/entities/Department" },
+      "description": "University academic departments."
+    },
+    "/courses/{courseId}": {
+      "schema": { "$ref": "#/entities/Course" },
+      "description": "Courses and learning skill tracks."
+    },
+    "/study_materials/{materialId}": {
+      "schema": { "$ref": "#/entities/StudyMaterial" },
+      "description": "Faculty-uploaded study notes and PDFs."
+    },
+    "/assignments/{assignmentId}": {
+      "schema": { "$ref": "#/entities/Assignment" },
+      "description": "Course assignments with deadlines."
+    },
+    "/assignments/{assignmentId}/submissions/{submissionId}": {
+      "schema": { "$ref": "#/entities/Submission" },
+      "description": "Student assignment submissions."
+    },
+    "/exams/{examId}": {
+      "schema": { "$ref": "#/entities/Exam" },
+      "description": "Upcoming examinations and timetables."
+    },
+    "/attendance_records/{recordId}": {
+      "schema": { "$ref": "#/entities/AttendanceRecord" },
+      "description": "Per-student subject attendance records."
+    },
+    "/results/{resultId}": {
+      "schema": { "$ref": "#/entities/AcademicResult" },
+      "description": "Per-student semester academic results."
+    },
+    "/announcements/{announcementId}": {
+      "schema": { "$ref": "#/entities/Announcement" },
+      "description": "University and faculty announcements."
+    },
+    "/events/{eventId}": {
+      "schema": { "$ref": "#/entities/CampusEvent" },
+      "description": "Important university events and academic calendar."
+    },
+    "/feedback_ratings/{ratingId}": {
+      "schema": { "$ref": "#/entities/FeedbackRating" },
+      "description": "Five-star ratings and feedback entries."
+    }
+  }
+}
